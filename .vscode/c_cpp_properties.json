@@ -1,0 +1,35 @@
+{
+  "configurations": [
+    {
+      "browse": {
+        "databaseFilename": "${default}",
+        "limitSymbolsToIncludedHeaders": false
+      },
+      "includePath": [
+        "/home/josue/ros2_ws/install/reel/include/**",
+        "/home/josue/ros2_ws/install/pipecrawler/include/**",
+        "/home/josue/ros2_ws/install/lgs_interfaces/include/**",
+        "/home/josue/ros2_ws/install/imu_filter_madgwick/include/**",
+        "/home/josue/ros2_ws/install/imu_complementary_filter/include/**",
+        "/opt/ros/galactic/include/**",
+        "/home/josue/ros2_ws/src/fm_interfaces/include/**",
+        "/home/josue/ros2_ws/src/fm_odometry/include/**",
+        "/home/josue/ros2_ws/src/imu_tools/imu_complementary_filter/include/**",
+        "/home/josue/ros2_ws/src/imu_tools/imu_filter_madgwick/include/**",
+        "/home/josue/ros2_ws/src/lgs_bt/include/**",
+        "/home/josue/ros2_ws/src/lgs_control_plugin/include/**",
+        "/home/josue/ros2_ws/src/lgs_interfaces/include/**",
+        "/home/josue/ros2_ws/src/pipecrawler/include/**",
+        "/home/josue/ros2_ws/src/synchronizer/include/**",
+        "/home/josue/ros2_ws/src/tether_tracker/include/**",
+        "/usr/include/**"
+      ],
+      "name": "ROS",
+      "intelliSenseMode": "gcc-x64",
+      "compilerPath": "/usr/bin/gcc",
+      "cStandard": "gnu11",
+      "cppStandard": "c++14"
+    }
+  ],
+  "version": 4
+}
