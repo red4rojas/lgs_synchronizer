@@ -7,14 +7,16 @@
 #include <std_msgs/msg/int16.hpp>
 #include "pipecrawler/action/crawleraction.hpp"
 #include "reel/action/reelaction.hpp"
+#include "lgs_interfaces/action/reel.hpp"
+#include "lgs_interfaces/action/crawler.hpp"
 #include "rclcpp_action/rclcpp_action.hpp"
 
 #define LOG(...) RCLCPP_INFO(rclcpp::get_logger("synchro_node"), __VA_ARGS__)
 
 class Ros {
-using CrawlerAction = pipecrawler::action::Crawleraction;
+using CrawlerAction = lgs_interfaces::action::Crawler;
 using CrawlGoalHandle = rclcpp_action::ClientGoalHandle<CrawlerAction>;
-using ReelAction = reel::action::Reelaction;
+using ReelAction = lgs_interfaces::action::Reel;
 using ReelGoalHandle = rclcpp_action::ClientGoalHandle<ReelAction>;
 public:
     Ros(int argc, char *argv[], const std::string &node_name);
@@ -42,9 +44,10 @@ private:
     void wait_servers();
     void call_crawler(signed short single);
     void call_crawler(std::vector<signed short> pattern); 
+    void call_crawler(std::vector<signed short> pattern, std::vector<float> timing); 
     void call_reel(int vel, float interval, bool continous);
     void goal_response_callback(std::shared_future<CrawlGoalHandle::SharedPtr> future);
-
+    //  void feedback_callback(CrawlGoalHandle::SharedPtr,const std::shared_ptr<CrawlerAction::Feedback> feedback);
 };
 
 #endif // NODE_H

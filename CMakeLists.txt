@@ -12,6 +12,7 @@ find_package(rclcpp REQUIRED)
 find_package(rclcpp_action REQUIRED)
 find_package(pipecrawler REQUIRED)
 find_package(reel REQUIRED)
+find_package(lgs_interfaces REQUIRED)
 
 add_executable(synchro_node 
   src/main.cpp
@@ -32,6 +33,7 @@ ament_target_dependencies(synchro_node
   std_msgs 
   pipecrawler
   reel
+  lgs_interfaces
 )
 
 if(BUILD_TESTING)
