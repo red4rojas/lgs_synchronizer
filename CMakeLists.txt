@@ -29,8 +29,6 @@ ament_target_dependencies(synchro_node
   rclcpp 
   rclcpp_action
   std_msgs 
-  pipecrawler
-  reel
   lgs_interfaces
 )
 
