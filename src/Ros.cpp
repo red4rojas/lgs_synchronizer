@@ -148,15 +148,27 @@ void Ros::pass_command(const std::string& msg){
   } else if (msg == "back_grip_off"){
     call_crawler(6);   
   } else if (msg == "forward"){
-    call_crawler(std::vector<signed short>({5,3,1,6,4,2}), std::vector<float>({2.1,1.8,1.1,3.1,3.0,1.1}));
-    call_reel(1,2.22,true);   
+    call_crawler(std::vector<signed short>({5,3,1,6,4,2}), std::vector<float>({5,7.0,0.8,0.8,7.5,0.8}));
+    call_reel(-1,3.2,true);  
+  // } else if (msg == "&forward"){
+  //   call_crawler(std::vector<signed short>({5,3,1,6,4,2}), std::vector<float>({5,7.0,0.8,0.8,7,0.8}));
+  //   call_reel(-1,3.2,true);    
   } else if (msg == "backward"){
-    // call_crawler(std::vector<signed short>({1,3,5,2,4,6}));
+    call_crawler(std::vector<signed short>({1,3,5,2,4,6}), std::vector<float>({5,7.0,0.8,0.8,7,0.8}));
+    // call_crawler(std::vector<signed short>({2,4,6}));
+    call_reel(2,0.8,true);   
+  } else if (msg == "pull_tether"){
     call_crawler(std::vector<signed short>({2,4,6}));
-    // call_reel(-2,0.8,true);   
+    call_reel(2,0.8,true);
+  } else if (msg == "unwind_tether"){
+    call_reel(-1,0.5,true);     
   } else if (msg == "stop"){
-    call_crawler(std::vector<signed short>({0,0,0,0,0,0}));
-    // call_reel(0,0,false);   
+    call_crawler(std::vector<signed short>({0}));
+    call_reel(0,0,false);   
+  } else if (msg == "stop_reel"){
+    call_reel(0,0,false);     
+  } else if (msg == "release_all"){
+    call_crawler(std::vector<signed short>({2,4,6}));
   } else {
     LOG("Ops, invalid msg");
   }

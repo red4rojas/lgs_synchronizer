@@ -6,5 +6,15 @@
         "/home/josue/ros2_ws/install/lgs_interfaces/lib/python3.8/site-packages",
         "/home/josue/ros2_ws/install/fm_interfaces/lib/python3.8/site-packages",
         "/opt/ros/galactic/lib/python3.8/site-packages"
+    ],
+    "python.analysis.extraPaths": [
+        "/home/josue/ros2_ws/install/reel/lib/python3.8/site-packages",
+        "/home/josue/ros2_ws/install/pipecrawler/lib/python3.8/site-packages",
+        "/home/josue/ros2_ws/build/lgs_state_machine",
+        "/home/josue/ros2_ws/install/lgs_state_machine/lib/python3.8/site-packages",
+        "/home/josue/ros2_ws/install/lgs_reel/lib/python3.8/site-packages",
+        "/home/josue/ros2_ws/install/lgs_interfaces/lib/python3.8/site-packages",
+        "/home/josue/ros2_ws/install/fm_interfaces/lib/python3.8/site-packages",
+        "/opt/ros/galactic/lib/python3.8/site-packages"
     ]
 }
