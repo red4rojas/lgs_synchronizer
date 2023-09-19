@@ -18,7 +18,9 @@ Ros::Ros(int argc, char *argv[], const std::string &node_name) {
     m_executor = rclcpp::executors::StaticSingleThreadedExecutor::make_shared();
     m_node = rclcpp::Node::make_shared(node_name);
     m_executor->add_node(m_node);
-    // Add ROS publisher and subscribers
+    // Add ROS publisher and subscribers and action client/servers
+    m_request_sub = m_node->create_subscription<std_msgs::msg::String>("lgs_actuation_requests", 10, 
+    std::bind(&Ros::actuation_request_callback, this, _1));
     m_crawl_client = rclcpp_action::create_client<CrawlerAction>(m_node,"activate_crawler"); 
     m_reel_client = rclcpp_action::create_client<ReelAction>(m_node,"turn_reel"); 
 
@@ -56,9 +58,7 @@ void Ros::call_crawler(signed short code){
     crawler_goal.command.pattern = {code};
     crawler_goal.command.looping = false;
     auto send_goal_options = rclcpp_action::Client<CrawlerAction>::SendGoalOptions();
-    send_goal_options.goal_response_callback = std::bind(&Ros::goal_response_callback, this, _1);
-    // send_goal_options.feedback_callback = std::bind(&LGSActionClient::feedback_callback, this, _1, _2);
-    // send_goal_options.result_callback = std::bind(&LGSActionClient::result_callback, this, _1);
+    // send_goal_options.goal_response_callback = std::bind(&Ros::goal_response_callback, this, _1);
     this->m_crawl_client->async_send_goal(crawler_goal, send_goal_options);
 }
 
@@ -76,8 +76,6 @@ void Ros::call_crawler(std::vector<signed short> pattern){
     }
     auto send_goal_options = rclcpp_action::Client<CrawlerAction>::SendGoalOptions();
     send_goal_options.goal_response_callback = std::bind(&Ros::goal_response_callback, this, _1);
-    // send_goal_options.feedback_callback = std::bind(&LGSActionClient::feedback_callback, this, _1, _2);
-    // send_goal_options.result_callback = std::bind(&LGSActionClient::result_callback, this, _1);
     this->m_crawl_client->async_send_goal(crawler_goal, send_goal_options);
 }
 
@@ -98,10 +96,9 @@ void Ros::call_crawler(std::vector<signed short> pattern, std::vector<float> tim
     }
     auto send_goal_options = rclcpp_action::Client<CrawlerAction>::SendGoalOptions();
     send_goal_options.goal_response_callback = std::bind(&Ros::goal_response_callback, this, _1);
-    // send_goal_options.feedback_callback = std::bind(&LGSActionClient::feedback_callback, this, _1, _2);
-    // send_goal_options.result_callback = std::bind(&LGSActionClient::result_callback, this, _1);
     this->m_crawl_client->async_send_goal(crawler_goal, send_goal_options);
 }
+
 void Ros::call_reel(int vel, float interval, bool continuous){
     LOG("Calling reel server");
     auto reel_goal = ReelAction::Goal();
@@ -109,6 +106,7 @@ void Ros::call_reel(int vel, float interval, bool continuous){
     reel_goal.command.interval = interval;
     reel_goal.command.continuous = continuous;
     auto send_goal_options = rclcpp_action::Client<ReelAction>::SendGoalOptions();
+    send_goal_options.goal_response_callback = std::bind(&Ros::reel_goal_response_callback, this, _1);
     this->m_reel_client->async_send_goal(reel_goal, send_goal_options);
 }
 
@@ -124,8 +122,8 @@ void Ros::wait_servers(){
   }
 }
 
-void Ros::goal_response_callback(std::shared_future<CrawlGoalHandle::SharedPtr> future)  {
-  auto goal_handle = future.get();
+void Ros::goal_response_callback(const CrawlGoalHandle::SharedPtr & goal_handle)  {
+  // auto goal_handle = future.get();
   if (!goal_handle) {
     LOG( "Goal was rejected by server");
   } else {
@@ -133,7 +131,19 @@ void Ros::goal_response_callback(std::shared_future<CrawlGoalHandle::SharedPtr> 
   }
 }
 
-void Ros::pass_command(const std::string& msg){
+void Ros::reel_goal_response_callback(const ReelGoalHandle::SharedPtr & reel_goal_handle)  {
+  // auto goal_handle = future.get();
+  if (!reel_goal_handle) {
+    LOG( "Goal was rejected by server");
+  } else {
+    LOG( "Goal accepted by server, waiting for result");
+  }
+}
+
+
+void Ros::actuation_request_callback(const std_msgs::msg::String & ros_msg){
+  // pass_command(msg.data.c_str());
+  auto msg = ros_msg.data;
   LOG( "received command: %s", msg.c_str());
   if (msg == "front_grip_on"){
     call_crawler(1);
@@ -173,38 +183,3 @@ void Ros::pass_command(const std::string& msg){
     LOG("Ops, invalid msg");
   }
 }
-//  void feedback_callback(
-//     CrawlGoalHandle::SharedPtr,
-//     const std::shared_ptr<CrawlerAction::Feedback> feedback)
-//   {
-//     // std::stringstream ss;
-//     // ss << "Next number in sequence received: ";
-//     // for (auto number : feedback->partial_sequence) {
-//     //   ss << number << " ";
-//     // }
-//     // RCLCPP_INFO(this->get_logger(), ss.str().c_str());
-//   }
-
-//   void result_callback(const CrawlGoalHandle::WrappedResult & result)
-//   {
-//     switch (result.code) {
-//       case rclcpp_action::ResultCode::SUCCEEDED:
-//         break;
-//       case rclcpp_action::ResultCode::ABORTED:
-//         RCLCPP_ERROR(this->get_logger(), "Goal was aborted");
-//         return;
-//       case rclcpp_action::ResultCode::CANCELED:
-//         RCLCPP_ERROR(this->get_logger(), "Goal was canceled");
-//         return;
-//       default:
-//         RCLCPP_ERROR(this->get_logger(), "Unknown result code");
-//         return;
-//     }
-//     std::stringstream ss;
-//     ss << "Result received: ";
-//     for (auto number : result.result->sequence) {
-//       ss << number << " ";
-//     }
-//     RCLCPP_INFO(this->get_logger(), ss.str().c_str());
-//     rclcpp::shutdown();
-//   }

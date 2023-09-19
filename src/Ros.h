@@ -20,7 +20,7 @@ public:
     Ros(int argc, char *argv[], const std::string &node_name);
     ~Ros();
     static Ros *instance(void) { return s_self; }
-    void pass_command(const std::string& msg);
+    // void pass_command(const std::string& msg);
     static void quit(void) { s_self->shutdown(); }
     void spin(void);
     void spinOnBackground(void);
@@ -34,6 +34,7 @@ private:
     rclcpp_action::Client<CrawlerAction>::SharedPtr m_crawl_client;
     rclcpp_action::Client<ReelAction>::SharedPtr m_reel_client;
     rclcpp::Publisher<std_msgs::msg::Int16>::SharedPtr m_publisher;
+    rclcpp::Subscription<std_msgs::msg::String>::SharedPtr m_request_sub;
     rclcpp::executors::StaticSingleThreadedExecutor::SharedPtr m_executor;
     // Instance
     static Ros *s_self;
@@ -44,7 +45,10 @@ private:
     void call_crawler(std::vector<signed short> pattern); 
     void call_crawler(std::vector<signed short> pattern, std::vector<float> timing); 
     void call_reel(int vel, float interval, bool continous);
-    void goal_response_callback(std::shared_future<CrawlGoalHandle::SharedPtr> future);
+    void goal_response_callback(const CrawlGoalHandle::SharedPtr & goal_handle);
+    void actuation_request_callback(const std_msgs::msg::String & msg);
+
+    void reel_goal_response_callback(const ReelGoalHandle::SharedPtr & reel_goal_handle); 
     //  void feedback_callback(CrawlGoalHandle::SharedPtr,const std::shared_ptr<CrawlerAction::Feedback> feedback);
 };
 
