@@ -131,7 +131,7 @@ void Ros::goal_response_callback(const CrawlGoalHandle::SharedPtr & goal_handle)
   }
 }
 
-void Ros::reel_goal_response_callback(const ReelGoalHandle::SharedPtr & reel_goal_handle)  {
+void Ros::reel_goal_response_callback(const ReelGoalHandle::SharedPtr & reel_goal_handle) {
   // auto goal_handle = future.get();
   if (!reel_goal_handle) {
     LOG( "Goal was rejected by server");
@@ -142,7 +142,6 @@ void Ros::reel_goal_response_callback(const ReelGoalHandle::SharedPtr & reel_goa
 
 
 void Ros::actuation_request_callback(const std_msgs::msg::String & ros_msg){
-  // pass_command(msg.data.c_str());
   auto msg = ros_msg.data;
   LOG( "received command: %s", msg.c_str());
   if (msg == "front_grip_on"){
@@ -160,12 +159,8 @@ void Ros::actuation_request_callback(const std_msgs::msg::String & ros_msg){
   } else if (msg == "forward"){
     call_crawler(std::vector<signed short>({5,3,1,6,4,2}), std::vector<float>({5,7.0,0.8,0.8,7.5,0.8}));
     call_reel(-1,3.2,true);  
-  // } else if (msg == "&forward"){
-  //   call_crawler(std::vector<signed short>({5,3,1,6,4,2}), std::vector<float>({5,7.0,0.8,0.8,7,0.8}));
-  //   call_reel(-1,3.2,true);    
   } else if (msg == "backward"){
     call_crawler(std::vector<signed short>({1,3,5,2,4,6}), std::vector<float>({5,7.0,0.8,0.8,7,0.8}));
-    // call_crawler(std::vector<signed short>({2,4,6}));
     call_reel(2,0.8,true);   
   } else if (msg == "pull_tether"){
     call_crawler(std::vector<signed short>({2,4,6}));
